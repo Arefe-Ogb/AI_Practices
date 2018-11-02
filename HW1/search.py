@@ -87,6 +87,33 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
+    from game import Directions
+    #create fringe as a stack
+    fringe = util.Stack()
+    
+    # Create visitedList as an array
+    # Checked nodes are added to visitedList
+    visitedList = []
+
+    # push starting node to the fringe
+    fringe.push((problem.getStartState(), [], 0))
+    # pop the node from the fringe
+    (state, toDirection, toCost) = fringe.pop()
+    # checked node is added to visitedList
+    visitedList.append(state)
+        # while the goal point isn't found the children are expanded
+    while not problem.isGoalState(state):
+        successors = problem.getSuccessors(state)
+        for son in successors:
+            # if the child isn't visited push it to the fringe
+            if (not son[0] in visitedList) or (problem.isGoalState(son[0])): 
+                fringe.push((son[0], toDirection + [son[1]], toCost + son[2]))
+                # add child node to visitedList
+                visitedList.append(son[0])
+        (state, toDirection, toCost) = fringe.pop()
+
+    return toDirection
+
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
