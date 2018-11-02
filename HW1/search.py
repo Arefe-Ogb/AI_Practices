@@ -119,6 +119,33 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+    
+    from game import Directions
+
+    # Create fringe as a queue
+    fringe = util.Queue()
+    visitedList = []
+
+    #push the starting node to the queue
+    fringe.push((problem.getStartState(),[],0))
+    #pop the node
+    (state,toDirection,toCost) = fringe.pop()
+    #add the node to visitedList
+    visitedList.append(state)
+
+    # while the goal node isn't found the children are expanded
+    while not problem.isGoalState(state): 
+        successors = problem.getSuccessors(state) 
+        for son in successors:
+            #if the child isn't visited, push to the queue
+            if not son[0] in visitedList: 
+                fringe.push((son[0],toDirection + [son[1]],toCost + son[2])) 
+                # add the node to visitedList
+                visitedList.append(son[0]) 
+        (state,toDirection,toCost) = fringe.pop()
+
+    return toDirection
+
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
