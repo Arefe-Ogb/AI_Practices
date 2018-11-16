@@ -167,7 +167,7 @@ def uniformCostSearch(problem):
 
     while not problem.isGoalState(state): #while the goal node isn't found
         successors = problem.getSuccessors(state) #get the point's children (succesors)
-        for son in successors:
+        for son in successors: #for each child in children nodes
             visitedExist = False #if it hasn't been visited before
             total_cost = toCost + son[2] #the total cost is "cost p until now" + "the cost of the child node"
             for (visitedState,visitedToCost) in visitedList:
@@ -185,6 +185,7 @@ def uniformCostSearch(problem):
         # remove the previous node from fringe
         (state,toDirection,toCost) = fringe.pop()
 
+    #return the direction to the goal
     return toDirection
     util.raiseNotDefined()
 
@@ -198,6 +199,39 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    from game import Directions
+
+    #create fringe as a priority Queue
+    fringe = util.PriorityQueue() 
+    visitedList = []
+
+    #push the starting node into queue
+    fringe.push((problem.getStartState(),[],0),0 + heuristic(problem.getStartState(),problem)) # push starting point with priority num of 0
+    #remove the node
+    (state,toDirection,toCost) = fringe.pop()
+    #add the node to visited list
+    visitedList.append((state,toCost + heuristic(problem.getStartState(),problem)))
+
+    while not problem.isGoalState(state): #while the goal point isn't found
+        successors = problem.getSuccessors(state) #get the point's children (succesors)
+        for son in successors: #for each child in children nodes
+            visitedExist = False #if it hasn't been visited before
+            total_cost = toCost + son[2] #the total cost is "cost up until now" + "the cost of the child node"
+            for (visitedState,visitedToCost) in visitedList:
+                # if the successor has not been visited, or has a lower cost than the previous one
+                if (son[0] == visitedState) and (total_cost >= visitedToCost): 
+                    visitedExist = True #node is considered visited
+                    break
+
+            if not visitedExist:        
+                # push the point with priority number of its total cost
+                fringe.push((son[0],toDirection + [son[1]],toCost + son[2]),toCost + son[2] + heuristic(son[0],problem)) 
+                visitedList.append((son[0],toCost + son[2])) # add this node to visited list
+
+        # remove the previous node from fringe         
+        (state,toDirection,toCost) = fringe.pop()
+    #return the direction to the goal
+    return toDirection
     util.raiseNotDefined()
 
 
